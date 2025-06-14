@@ -18,9 +18,10 @@ const RTC_CONFIG = {
     { urls: 'stun:stun2.l.google.com:19302' },
     { urls: 'stun:stun3.l.google.com:19302' },
     { urls: 'stun:stun4.l.google.com:19302' },
-    // For production environments, consider setting up a TURN server
-    // or using a service like Twilio Global ICE for reliable connections.
-    // { urls: 'turn:your-turn-server.com:3478', username: 'user', credential: 'password' },
+    // Using a free TURN server from freeturn.net for MVP testing. 
+    // Note: This free tier might be limited and does not support SSL (TURNS).
+    // For production, consider a more robust solution like Cloudflare Calls or a paid TURN service.
+    { urls: 'turn:freestun.net:3478', username: 'free', credential: 'free' }
   ] 
 }
 
