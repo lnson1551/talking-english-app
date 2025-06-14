@@ -26,12 +26,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (error) {
-        console.error('AuthContext: Error getting session:', error);
+        console.error('AuthContext: Error getting initial session:', error);
+      } else {
+        console.log('AuthContext: Initial session data fetched:', session);
       }
-      console.log('AuthContext: Initial session data:', session);
       setSession(session)
       setUser(session?.user ?? null)
       setIsLoading(false)
+      console.log('AuthContext: Initial state set. User:', session?.user?.email, 'Session:', session ? 'present' : 'absent', 'isLoading:', false);
     })
 
     // Listen for auth changes
@@ -41,7 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('AuthContext: Auth state changed. Event:', _event, 'Session:', session);
       setSession(session)
       setUser(session?.user ?? null)
-      setIsLoading(false)
+      setIsLoading(false) // Set isLoading to false after any auth state change
+      console.log('AuthContext: State updated from auth change. User:', session?.user?.email, 'Session:', session ? 'present' : 'absent', 'isLoading:', false);
     })
 
     return () => {

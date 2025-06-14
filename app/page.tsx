@@ -209,7 +209,7 @@ export default function Dashboard() {
                   {rooms.map((room) => {
                     console.log(`Room: ${room.name}, ID: ${room.id}, is_active: ${room.is_active}, Participant Count: ${room.participant_count?.count || 0}`);
                     return (
-                    <Link key={room.id} href={`/room/${room.id}`} className={!room.is_active || (room.participant_count?.count || 0) === 0 ? 'pointer-events-none opacity-50' : ''}>
+                    <Link key={room.id} href={`/room/${room.id}`}>
                       <Card className="bg-background hover:bg-card transition-colors cursor-pointer border-border">
                         <CardContent className="p-4">
                           <div className="flex items-center justify-between mb-2">
