@@ -122,7 +122,7 @@ export default function Dashboard() {
   console.log('Rendering main dashboard content. User:', user?.email, 'Rooms:', rooms.length);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -148,36 +148,38 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid gap-8">
-          {/* Welcome Section */}
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-2">
-              Welcome to Talking English!
-            </h2>
-            <p className="text-muted-foreground text-lg">
-              Join voice chat rooms to practice English with others
-            </p>
-          </div>
+      <main className="flex-grow flex items-center justify-center">
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid gap-8">
+            {/* Welcome Section */}
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-foreground mb-2">
+                Welcome to Talking English!
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Join voice chat rooms to practice English with others
+              </p>
+            </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row justify-center gap-4 sm:space-x-4">
-            <Link href="/create-room">
-              <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
-                <Plus className="h-5 w-5 mr-2" />
-                Create Room
-              </Button>
-            </Link>
-            <Link href="/join-room">
-              <Button size="lg" variant="outline" className="w-full border-border text-foreground hover:bg-accent">
-                <Users className="h-5 w-5 mr-2" />
-                Join Room
-              </Button>
-            </Link>
-          </div>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-center gap-4 sm:space-x-4">
+              <Link href="/create-room">
+                <Button size="lg" className="w-full bg-primary hover:bg-primary/90">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Room
+                </Button>
+              </Link>
+              <Link href="/join-room">
+                <Button size="lg" variant="outline" className="w-full border-border text-foreground hover:bg-accent">
+                  <Users className="h-5 w-5 mr-2" />
+                  Join Room
+                </Button>
+              </Link>
+            </div>
 
-          {/* Active Rooms - Moved to /join-room page */}
-          
+            {/* Active Rooms - Moved to /join-room page */}
+            
+          </div>
         </div>
       </main>
     </div>

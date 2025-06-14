@@ -601,95 +601,61 @@ export default function RoomPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col lg:flex-row p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
-        {/* Room Info & Controls (Left/Top) */}
-        <div className="w-full lg:w-1/3 lg:pr-8 mb-8 lg:mb-0">
-          <Card className="bg-card border-border mb-6">
-            <CardHeader>
-              <CardTitle className="text-foreground text-xl">Room Details</CardTitle>
-            </CardHeader>
-            <CardContent className="text-muted-foreground">
-              <p className="mb-2">Name: <span className="font-semibold text-foreground">{room?.name || 'Loading...'}</span></p>
-              <p className="mb-2">Created: <span className="font-semibold text-foreground">{room?.created_at ? new Date(room.created_at).toLocaleDateString() : 'Loading...'}</span></p>
-              <p className="mb-2">Status: <span className="font-semibold text-foreground">{room?.is_active ? 'Active' : 'Inactive'}</span></p>
-              <p>Participants: <span className="font-semibold text-foreground">{participants.length}</span></p>
-            </CardContent>
-          </Card>
-
-          {error && (
-            <Card className="bg-destructive/20 border-destructive text-destructive-foreground mb-6">
-              <CardContent className="p-4 flex items-center">
-                <AlertTriangle className="h-5 w-5 mr-3 flex-shrink-0" aria-label="Error" />
-                <div>
-                  <p className="font-semibold">Error:</p>
-                  <p className="text-sm">{error}</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* My Controls */}
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-foreground text-xl">My Controls</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <Button
-                  onClick={handleToggleMic}
-                  variant={isMuted ? "secondary" : "default"}
-                  className="w-full"
+      <main className="flex-grow flex justify-center p-4">
+        {/* Participants List - Now centered */}
+        <Card className="flex-[2] relative overflow-hidden max-w-2xl"> {/* Adjusted max-w to keep it readable */}
+          <CardHeader>
+            <CardTitle className="text-xl">Participants ({participants.length})</CardTitle>
+            <CardDescription>Active users in this room</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-4 py-4">
+            {participants.length === 0 ? (
+              <p className="text-muted-foreground">No participants yet. Be the first!</p>
+            ) : (
+              participants.map(p => (
+                <div 
+                  key={p.id} 
+                  className={cn(
+                    "relative p-4 border rounded-lg flex flex-col items-center justify-center min-w-[120px] shadow-sm transition-all duration-200",
+                    !p.is_muted ? "border-primary shadow-lg ring-2 ring-primary" : "border-border"
+                  )}
                 >
-                  {isMuted ? <MicOff className="h-5 w-5 mr-2" /> : <Mic className="h-5 w-5 mr-2" />}
-                  {isMuted ? 'Unmute' : 'Mute'}
-                </Button>
-              </div>
-              <p className="text-muted-foreground text-xs mt-2">Connection Status: {connectionStatus}</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Participants (Right/Bottom) */}
-        <div className="w-full lg:w-2/3">
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-foreground text-xl">Participants ({participants.length})</CardTitle>
-              <CardDescription className="text-muted-foreground">Active users in this room</CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {participants.length === 0 ? (
-                <p className="text-muted-foreground col-span-full">No one else is in this room.</p>
-              ) : (
-                participants.map(p => (
-                  <Card
-                    key={p.id}
-                    className={cn(
-                      "bg-card border border-border flex items-center p-4 shadow-lg transition-all duration-300",
-                      !p.is_muted ? "shadow-green-500/50 outline outline-2 outline-green-500" : ""
+                  <p className="font-semibold text-foreground text-center break-words">
+                    {p.user_profile?.display_name || 'Unknown User'}
+                    {p.user_id === user?.id && " (You)"}
+                  </p>
+                  <div className="mt-2 flex items-center">
+                    {!p.is_muted ? (
+                      <Mic className="h-5 w-5 text-primary" />
+                    ) : (
+                      <MicOff className="h-5 w-5 text-muted-foreground" />
                     )}
-                  >
-                    <div className="flex-1">
-                      <h3 className="font-semibold">
-                        {p.user_profile?.display_name || 'Unknown User'}
-                        {p.user_id === user?.id && ' (You)'}
-                      </h3>
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        {!p.is_muted ? (
-                          <Mic className="h-3 w-3 mr-1 text-primary" />
-                        ) : (
-                          <MicOff className="h-3 w-3 mr-1" />
-                        )}
-                        <span>{!p.is_muted ? 'Mic Open' : 'Muted'}</span>
-                        <audio ref={el => { remoteAudioRefs.current[p.user_id] = el; }} autoPlay />
-                      </div>
-                    </div>
-                  </Card>
-                ))
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                    <span className="ml-1 text-sm text-muted-foreground">
+                      {!p.is_muted ? "Mic Open" : "Muted"}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
       </main>
+
+      {/* My Controls - Fixed at bottom and centered */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"> {/* Positioning for the mic button */}
+        <Button
+          onClick={handleToggleMic}
+          disabled={!joined}
+          size="icon" // Use icon size for a square button
+          className={cn(
+            "h-16 w-16 rounded-full p-0 flex items-center justify-center shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary",
+            !isMuted ? "bg-primary hover:bg-primary/90" : "bg-muted-foreground hover:bg-muted-foreground/90"
+          )}
+          aria-label={!isMuted ? "Mute microphone" : "Unmute microphone"}
+        >
+          {!isMuted ? <Mic className="h-8 w-8" /> : <MicOff className="h-8 w-8" />}
+        </Button>
+      </div>
     </div>
   )
 } 
