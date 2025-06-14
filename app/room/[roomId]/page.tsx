@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase'
 import { getRoomParticipants, joinRoom, leaveRoom, updateParticipantMute, updateRoomActiveStatus, type RoomParticipant, deleteRoom } from '@/lib/database'
 import { Mic, MicOff, LogOut, Loader2, Users, AlertTriangle } from 'lucide-react'
 import AudioControls from '@/components/audio-controls'
+import { cn } from '@/lib/utils'
 
 // --- WebRTC helpers ---
 const RTC_CONFIG = { 
@@ -649,15 +650,18 @@ export default function RoomPage() {
                 <p className="text-muted-foreground col-span-full">No one else is in this room.</p>
               ) : (
                 participants.map(p => (
-                  <Card key={p.id} className="bg-background border-border">
-                    <CardContent className="p-4">
-                      <div className="flex items-center mb-2">
-                        <Users className="h-4 w-4 mr-2 text-primary" />
-                        <h4 className="font-semibold text-foreground">
-                          {p.user_profile?.display_name || 'Unknown User'}
-                          {p.user_id === user?.id && ' (You)'}
-                        </h4>
-                      </div>
+                  <Card
+                    key={p.id}
+                    className={cn(
+                      "bg-card border border-border flex items-center p-4 shadow-lg transition-all duration-300",
+                      !p.is_muted ? "shadow-green-500/50 outline outline-2 outline-green-500" : ""
+                    )}
+                  >
+                    <div className="flex-1">
+                      <h3 className="font-semibold">
+                        {p.user_profile?.display_name || 'Unknown User'}
+                        {p.user_id === user?.id && ' (You)'}
+                      </h3>
                       <div className="flex items-center text-sm text-muted-foreground">
                         <MicOff className="h-3 w-3 mr-1" />
                         <span>{p.is_muted ? 'Muted' : 'Unmuted'}</span>
@@ -672,7 +676,7 @@ export default function RoomPage() {
                         )}
                         <audio ref={el => { remoteAudioRefs.current[p.user_id] = el; }} autoPlay />
                       </div>
-                    </CardContent>
+                    </div>
                   </Card>
                 ))
               )}
