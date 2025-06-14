@@ -663,17 +663,12 @@ export default function RoomPage() {
                         {p.user_id === user?.id && ' (You)'}
                       </h3>
                       <div className="flex items-center text-sm text-muted-foreground">
-                        <MicOff className="h-3 w-3 mr-1" />
-                        <span>{p.is_muted ? 'Muted' : 'Unmuted'}</span>
-                      </div>
-                      <div className="mt-2">
-                        {p.user_id !== user?.id && (
-                          <AudioControls
-                            userId={p.user_id}
-                            isMuted={p.is_muted}
-                            audioElement={remoteAudioRefs.current[p.user_id]}
-                          />
+                        {!p.is_muted ? (
+                          <Mic className="h-3 w-3 mr-1 text-primary" />
+                        ) : (
+                          <MicOff className="h-3 w-3 mr-1" />
                         )}
+                        <span>{!p.is_muted ? 'Mic Open' : 'Muted'}</span>
                         <audio ref={el => { remoteAudioRefs.current[p.user_id] = el; }} autoPlay />
                       </div>
                     </div>
