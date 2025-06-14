@@ -176,66 +176,8 @@ export default function Dashboard() {
             </Link>
           </div>
 
-          {/* Active Rooms */}
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-foreground flex flex-col sm:flex-row items-center justify-between text-center sm:text-left">
-                <span className="mb-2 sm:mb-0">Active Rooms</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={fetchRooms}
-                  disabled={isLoadingRooms}
-                  className="text-foreground hover:bg-accent"
-                >
-                  {isLoadingRooms ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                  ) : (
-                    'Refresh'
-                  )}
-                </Button>
-              </CardTitle>
-              <CardDescription className="text-muted-foreground text-center sm:text-left">
-                Join existing voice chat rooms
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {isLoadingRooms ? (
-                <div className="flex justify-center py-8">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </div>
-              ) : rooms.length > 0 ? (
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {rooms.map((room) => {
-                    console.log(`Room: ${room.name}, ID: ${room.id}, is_active: ${room.is_active}, Participant Count: ${room.participant_count?.count || 0}`);
-                    return (
-                    <Link key={room.id} href={`/room/${room.id}`}>
-                      <Card className="bg-background hover:bg-card transition-colors cursor-pointer border-border">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-semibold text-foreground">{room.name}</h3>
-                            <div className="flex items-center text-sm text-primary">
-                              <Users className="h-4 w-4 mr-1" />
-                              <span>{room.participant_count?.count || 0}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {formatDate(room.created_at)}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  )})}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">No active rooms available</p>
-                  <p className="text-muted-foreground text-sm mt-2">Create a room to get started!</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Active Rooms - Moved to /join-room page */}
+          
         </div>
       </main>
     </div>

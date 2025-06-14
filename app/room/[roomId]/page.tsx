@@ -65,9 +65,18 @@ export default function RoomPage() {
         }
       } else {
         console.error('Error fetching participants:', error);
+        // Add more detailed logging for debugging deployed environment
+        console.error('Supabase error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching participants (catch):', err)
+      // Also log full error object from catch block
+      console.error('Full catch error object:', err);
     }
   }, [roomId, user, joined]);
 
@@ -146,6 +155,13 @@ export default function RoomPage() {
 
       if (fetchError) {
         console.error('Error checking existing participants:', fetchError);
+        // Add more detailed logging for debugging deployed environment
+        console.error('Supabase error details (check existing):', {
+          message: fetchError.message,
+          code: fetchError.code,
+          details: fetchError.details,
+          hint: fetchError.hint,
+        });
         setError('Failed to check room participants.');
         return;
       }

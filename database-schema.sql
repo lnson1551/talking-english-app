@@ -88,16 +88,6 @@ CREATE POLICY "Users can leave rooms" ON room_participants
 DROP POLICY IF EXISTS "Allow any authenticated user to deactivate empty rooms" ON rooms;
 DROP POLICY IF EXISTS "Allow authenticated users to update room active status" ON rooms;
 
--- Create a new policy that allows authenticated users to set 'is_active' to FALSE.
--- This policy is specifically for deactivation, allowing any authenticated user to set is_active to false.
--- The application must ensure the room is empty before calling this.
-CREATE POLICY "Allow authenticated user to set room inactive" ON rooms
-  FOR UPDATE
-  TO authenticated
-  WITH CHECK (
-    NEW.is_active = FALSE AND OLD.is_active = TRUE
-  );
-
 -- Function to automatically create user profile on signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$

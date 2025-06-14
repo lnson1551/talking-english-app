@@ -96,8 +96,8 @@ export async function getRoomParticipants(roomId: string) {
   const { data, error } = await supabase
     .from('room_participants')
     .select(`
-      *
-      /* Removed user_profile:user_profiles(display_name) to simplify and debug */
+      *,
+      user_profile:user_profiles(display_name)
     `)
     .eq('room_id', roomId)
 

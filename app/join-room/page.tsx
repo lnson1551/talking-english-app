@@ -8,21 +8,14 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { useAuth } from '@/contexts/auth-context'
 import { supabase } from '@/lib/supabase'
-import { Loader2, ArrowLeft, Mic, Users } from 'lucide-react'
-
-interface Room {
-  id: string
-  name: string
-  created_at: string
-  created_by: string
-  is_active: boolean
-}
+import { Loader2, ArrowLeft, Mic, Users, Clock } from 'lucide-react'
+import { type Room } from '@/lib/database'
 
 export default function JoinRoomPage() {
   const { user } = useAuth()
   const router = useRouter()
   const [rooms, setRooms] = useState<Room[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingRooms, setIsLoadingRooms] = useState(true)
   const [roomName, setRoomName] = useState('')
   const [error, setError] = useState('')
 
@@ -32,15 +25,34 @@ export default function JoinRoomPage() {
     // eslint-disable-next-line
   }, [user])
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
   const fetchRooms = async () => {
-    setIsLoading(true)
+    setIsLoadingRooms(true)
     const { data, error } = await supabase
       .from('rooms')
-      .select('*')
-      .eq('is_active', true)
+      .select(`
+        *,
+        participant_count:room_participants(count)
+      `)
       .order('created_at', { ascending: false })
-    if (!error) setRooms(data || [])
-    setIsLoading(false)
+    if (!error) {
+      const allRooms = data || []
+      allRooms.sort((a, b) => {
+        const aCount = a.participant_count?.count || 0;
+        const bCount = b.participant_count?.count || 0;
+        return bCount - aCount;
+      });
+      setRooms(allRooms)
+    }
+    setIsLoadingRooms(false)
   }
 
   const handleJoinByName = async (e: React.FormEvent) => {
@@ -111,7 +123,7 @@ export default function JoinRoomPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
+            {isLoadingRooms ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
@@ -120,9 +132,18 @@ export default function JoinRoomPage() {
                 {rooms.map(room => (
                   <Link key={room.id} href={`/room/${room.id}`}>
                     <Card className="bg-background hover:bg-card transition-colors cursor-pointer border-border mb-2">
-                      <CardContent className="p-3 flex items-center gap-2">
-                        <Mic className="h-4 w-4 text-primary" />
-                        <span className="text-foreground font-medium">{room.name}</span>
+                      <CardContent className="p-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-foreground font-medium flex items-center gap-2"><Mic className="h-4 w-4 text-primary" />{room.name}</span>
+                          <div className="flex items-center text-sm text-primary">
+                            <Users className="h-4 w-4 mr-1" />
+                            <span>{room.participant_count?.count || 0}</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <Clock className="h-3 w-3 mr-1" />
+                          {formatDate(room.created_at)}
+                        </div>
                       </CardContent>
                     </Card>
                   </Link>
