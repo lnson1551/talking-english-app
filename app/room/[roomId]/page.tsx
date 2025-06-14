@@ -67,7 +67,7 @@ export default function RoomPage() {
       } else {
         console.error('Error fetching participants:', error);
         // Add more detailed logging for debugging deployed environment
-        console.error('Supabase error details:', {
+        console.error('Supabase error details (fetchParticipants):', {
           message: error.message,
           code: error.code,
           details: error.details,
@@ -110,14 +110,17 @@ export default function RoomPage() {
     try {
       const { data, error } = await supabase
         .from('rooms')
-        .select(`
-          *,
-          participant_count:room_participants(count)
-        `)
+        .select(`*`)
         .eq('id', roomId)
         .single()
 
       if (error) {
+        console.error('Supabase error details (fetchRoom):', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
         setError('Room not found or access denied.')
         setIsLoading(false)
         return
@@ -130,9 +133,6 @@ export default function RoomPage() {
       }
       console.log('fetchRoom: Fetched room data:', JSON.stringify(data, null, 2));
 
-      // Removed logic to check if room is active or has participants, per MVP request.
-      // Any existing room will now be considered joinable by default.
-      
       setRoom(data)
     } catch (err) {
       console.error('Failed to load room (catch):', err)
@@ -152,12 +152,13 @@ export default function RoomPage() {
 
     try {
       // Check if user is already a participant
+      console.log('handleJoin: Checking if user is already participant');
       const { data: existingParticipants, error: fetchError } = await getRoomParticipants(roomId);
 
       if (fetchError) {
         console.error('Error checking existing participants:', fetchError);
         // Add more detailed logging for debugging deployed environment
-        console.error('Supabase error details (check existing):', {
+        console.error('Supabase error details (check existing participants in handleJoin):', {
           message: fetchError.message,
           code: fetchError.code,
           details: fetchError.details,
@@ -173,17 +174,27 @@ export default function RoomPage() {
         console.log('User is already a participant in this room.');
         setJoined(true);
       } else {
+        console.log('handleJoin: User not in room, attempting to join.');
         const { error } = await joinRoom(roomId, user.id, isMuted)
         if (error) {
+          console.error('Error joining room:', error);
+          console.error('Supabase error details (joinRoom):', {
+            message: error.message,
+            code: error.code,
+            details: error.details,
+            hint: error.hint,
+          });
           setError(error.message)
           return
         }
         setJoined(true)
+        console.log('handleJoin: Successfully joined room.');
       }
       
       await startLocalStream()
       fetchParticipants()
     } catch (err) {
+      console.error('Error in handleJoin (catch):', err);
       setError('Failed to join room')
     }
   }

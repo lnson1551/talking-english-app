@@ -55,11 +55,6 @@ export default function JoinRoomPage() {
 
     if (!error) {
       const allRooms = data || []
-      allRooms.sort((a, b) => {
-        const aCount = (a as any).participant_count?.count || 0;
-        const bCount = (b as any).participant_count?.count || 0;
-        return bCount - aCount;
-      });
       setRooms(allRooms)
     }
     setIsLoadingRooms(false)
@@ -145,10 +140,6 @@ export default function JoinRoomPage() {
                       <CardContent className="p-3">
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-foreground font-medium flex items-center gap-2"><Mic className="h-4 w-4 text-primary" />{room.name}</span>
-                          <div className="flex items-center text-sm text-primary">
-                            <Users className="h-4 w-4 mr-1" />
-                            <span>{room.participant_count?.count || 0}</span>
-                          </div>
                         </div>
                         <div className="flex items-center text-sm text-muted-foreground">
                           <Clock className="h-3 w-3 mr-1" />

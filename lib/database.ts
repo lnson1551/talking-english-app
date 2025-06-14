@@ -83,10 +83,7 @@ export async function createRoom(name: string, createdBy: string | undefined) {
 export async function getRooms() {
   const { data, error } = await supabase
     .from('rooms')
-    .select(`
-      *,
-      participant_count:room_participants(count)
-    `)
+    .select(`*`)
     .order('created_at', { ascending: false })
 
   return { data, error }
