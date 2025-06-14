@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-geist-sans: 'Geist Sans';
+    --font-geist-mono: 'Geist Mono';
+
+    --background: 0 0% 5%; /* Dark charcoal/near black */
+    --foreground: 0 0% 98%; /* Off-white */
+
+    --card: 0 0% 8%; /* Slightly lighter dark for cards */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 150 80% 40%; /* A modern, slightly muted green/teal for primary actions */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 15%; /* Muted gray for secondary actions/elements */
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 12%; /* Even more muted gray for less prominent text/elements */
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 0 0% 15%; /* Same as secondary for general accent elements */
+    --accent-foreground: 0 0% 90%;
+
+    --destructive: 0 70% 50%; /* A clear red for destructive actions */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%; /* Subtle border color */
+    --input: 0 0% 12%; /* Input background, slightly lighter than overall background */
+    --ring: 150 80% 40%; /* Ring matches primary accent */
+
+    --radius: 0.5rem; /* Slightly rounded corners */
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 150 80% 40%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 70%;
+
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 90%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 12%;
+    --ring: 150 80% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+} 
