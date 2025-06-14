@@ -38,16 +38,26 @@ export default function JoinRoomPage() {
     setIsLoadingRooms(true)
     const { data, error } = await supabase
       .from('rooms')
-      .select(`
-        *,
-        participant_count:room_participants(count)
-      `)
+      .select('*')
       .order('created_at', { ascending: false })
+    
+    console.log('DEBUG: Fetching rooms. Data:', data);
+    console.log('DEBUG: Fetching rooms. Error:', error);
+    if (error) {
+      console.error('Supabase error details (fetchRooms):', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      });
+      setError(error.message || 'Failed to load rooms.');
+    }
+
     if (!error) {
       const allRooms = data || []
       allRooms.sort((a, b) => {
-        const aCount = a.participant_count?.count || 0;
-        const bCount = b.participant_count?.count || 0;
+        const aCount = (a as any).participant_count?.count || 0;
+        const bCount = (b as any).participant_count?.count || 0;
         return bCount - aCount;
       });
       setRooms(allRooms)
